@@ -1,4 +1,4 @@
-// corrcoef.cpp : Defines the entry point for the console application.
+// corrcoef.h : Defines the entry point for the console application.
 // remark
 //#include <atltime.h>
 //#include <iostream>
@@ -19,20 +19,26 @@ double corrCoef(double x[],double y[],int length);
 //					length (in) - length of thr vectors
 //return value :	result of corrCoef
 //*****************************************************************/
+double mean (double x[], int length){
+	double result;
+	for (int i=0;j<length;i++) 
+	{
+        result += x[i];
+	}
+	result /= length;
+	return result;
+}
+
 double corrCoef(double x[],double y[],int length)
 {
     const double TINY=1.0e-20;//tiny number to avoide division with zero
 	double res = 0;
     int j;
     double syy=0.0,sxy=0.0,sxx=0.0,ay=0.0,ax=0.0;
-    /**first loop to find the mean of x and y ***************************/
-	for (j=0;j<length;j++) 
-	{
-        ax += x[j];
-        ay += y[j];
-    }
-    ax /= length;
-    ay /= length;
+   
+	ax = mean(x,length);
+    ay = mean(y,length);
+	
 	/**secound loop for standard deviation ******************************/
     for (j=0;j<length;j++) 
 	{     

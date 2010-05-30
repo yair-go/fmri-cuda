@@ -1,6 +1,6 @@
-#include "cuda.h"
 
-#define BLOCK_SIZE 128
+#include"corrcoef.cuh"
+
 
 //*****************************************************************/
 //function name:	corrcoefGPU
@@ -38,7 +38,7 @@ __global__ void corrCoefGPU(double *dev_vin, int i,double *dev_meanArray, double
 	double *current=dev_vin+i*length;	//enter point to vec, specific vector i
 	double *pt=dev_vin+index*length;	//enter point to vec, for this one thread
 	double syy=0.0,sxy=0.0,sxx=0.0;
-	//TODO: parallel
+	
 	 for (int j=0;j<length;j++) 
 	{     
         sxx += (current[j]-dev_meanArray[i])*(current[j]-dev_meanArray[i]);
@@ -49,25 +49,25 @@ __global__ void corrCoefGPU(double *dev_vin, int i,double *dev_meanArray, double
     dev_vout[i][index]=sxy/(sqrt(sxx*syy)+TINY);
 }
 
-double* corrcoefGPU_kernel(double v[], int size, int length)
+double* corrcoefGPU_kernel(double* v, double* res, int size, int length)
 {
 	double* dev_vin,dev_vout,dev_meanArray;
-	double* res = (double *)malloc(size * size * sizeof(double *));
+	int status=1;
+	
 	cudaMalloc ((void**)&dev_vin,size*length);
 	cudaMalloc ((void**)&dev_meanArray,size);
 	cudaMalloc ((void**)&dev_vout,size*size);
 	
-	
-	
 	cudaMemcpy (dev_vin,v,size*length,cudaMemcpyHostToDevice);
 	dim3 dimBlock(BLOCK_SIZE,1);
-	dim3 dimGrid();	
+	dim3 dimGrid(size/BLOCK_SIZE,1);	
 	
 	mean<<<dimGrid,dimBlock>>>(dev_vin,dev_meanArray,length);
 	
 	for (int i=0;i<size;i++){
 		corrCoefGPU<<<dimGrid,dimBlock>>>(dev_vin,i,dev_meanArray,dev_vout,length);
 	}
-	cudaMemcpy (dev_vout,res,size*size,cudaMemcpyHostToDevice);
-	return res;
+	cudaMemcpy (res,dev_vout,size*size,cudaMemcpyHostToDevice);
+	status=0;
+	return status;
 }

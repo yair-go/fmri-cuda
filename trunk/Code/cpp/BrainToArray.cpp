@@ -1,20 +1,10 @@
 
 #include "stdafx.h"
+#include BrainToArray.h"
 
 #include <iostream>
 #include <fstream>
 using namespace std;
-double* get1DArray(int nrows,int ncol);
-
-int _tmain(int argc, _TCHAR* argv[])
-{
-
-	double *d=get1DArray(132,1000);
-     cout<<*(d);
-	int a;
-	cin>>a;
-	 return 0;
-}
 
 double* get1DArray(int nrows,int ncol)
 {

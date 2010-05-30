@@ -46,15 +46,18 @@ __global__ void corrCoefGPU(double *dev_vin, int i,double *dev_meanArray, double
         sxy += (current[j]-dev_meanArray[i])*(pt[j]-dev_meanArray[index]);
     }
 
-    dev_vout[index]=sxy/(sqrt(sxx*syy)+TINY);
+    dev_vout[i][index]=sxy/(sqrt(sxx*syy)+TINY);
 }
 
-void corrcoefGPU_kernel(double v[], int size, int length)
+double* corrcoefGPU_kernel(double v[], int size, int length)
 {
 	double* dev_vin,dev_vout,dev_meanArray;
+	double* res = (double *)malloc(size * size * sizeof(double *));
 	cudaMalloc ((void**)&dev_vin,size*length);
 	cudaMalloc ((void**)&dev_meanArray,size);
 	cudaMalloc ((void**)&dev_vout,size*size);
+	
+	
 	
 	cudaMemcpy (dev_vin,v,size*length,cudaMemcpyHostToDevice);
 	dim3 dimBlock(BLOCK_SIZE,1);
@@ -65,5 +68,6 @@ void corrcoefGPU_kernel(double v[], int size, int length)
 	for (int i=0;i<size;i++){
 		corrCoefGPU<<<dimGrid,dimBlock>>>(dev_vin,i,dev_meanArray,dev_vout,length);
 	}
-	cudaMemcpy (dev_vout,v,size*length,cudaMemcpyHostToDevice);
+	cudaMemcpy (dev_vout,res,size*size,cudaMemcpyHostToDevice);
+	return res;
 }

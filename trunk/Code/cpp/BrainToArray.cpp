@@ -1,6 +1,6 @@
 
-#include "stdafx.h"
-#include BrainToArray.h"
+
+#include "BrainToArray.h"
 
 #include <iostream>
 #include <fstream>

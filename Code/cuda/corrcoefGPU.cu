@@ -1,5 +1,5 @@
 
-#include"corrcoef.cuh"
+#include"corrcoefGPU.h"
 
 
 //*****************************************************************/
@@ -11,7 +11,7 @@
 //*****************************************************************/
 //kernel corrcoef function
 
-__global__ void mean(double *dev_vec, duoble *dev_meanArray, int length)
+__global__ void mean(double *dev_vec, double *dev_meanArray, int length)
 {
 	int block=blockIdx.x;
 	int thread=threadIdx.x;
@@ -22,12 +22,12 @@ __global__ void mean(double *dev_vec, duoble *dev_meanArray, int length)
 	for (i=0;i<length;i++){
 		res+=pt[i];
 	}
-	res/=legnth;
+	res/=length;
 	dev_meanArray[index]=res;
 	__syncthreads();
 }
 
-__global__ void corrCoefGPU(double *dev_vin, int i,double *dev_meanArray, double *dev_vout,int length)
+__global__ void corrCoefGPU(double *dev_vin, int i,double *dev_meanArray, double **dev_vout,int length)
 {
 	int block=blockIdx.x;
 	int thread=threadIdx.x;
@@ -49,14 +49,14 @@ __global__ void corrCoefGPU(double *dev_vin, int i,double *dev_meanArray, double
     dev_vout[i][index]=sxy/(sqrt(sxx*syy)+TINY);
 }
 
-double* corrcoefGPU_kernel(double* v, double* res, int size, int length)
+int corrcoefGPU_kernel(double* v, double** res, int size, int length)
 {
-	double* dev_vin,dev_vout,dev_meanArray;
+	double *dev_vin, **dev_vout, *dev_meanArray;
 	int status=1;
 	
-	cudaMalloc ((void**)&dev_vin,size*length);
-	cudaMalloc ((void**)&dev_meanArray,size);
-	cudaMalloc ((void**)&dev_vout,size*size);
+	cudaMalloc ((void**)&dev_vin, size*length);
+	cudaMalloc ((void**)&dev_meanArray, size);
+	cudaMalloc ((void***)&dev_vout, size*size);
 	
 	cudaMemcpy (dev_vin,v,size*length,cudaMemcpyHostToDevice);
 	dim3 dimBlock(BLOCK_SIZE,1);

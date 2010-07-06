@@ -14,7 +14,7 @@ VertexSet::~VertexSet(void)
 }
 VertexSet::VertexSet()
 {
-	INIT_SIZE	= 20;
+	INIT_SIZE	= 50;
 	INC			= 50;
 	_set		= new int[INIT_SIZE];
 	memset(_set,0,INIT_SIZE);

@@ -2,6 +2,7 @@
 /* flie name : main.cpp							*/
 /* writen by :R.K								*/
 /************************************************/
+#include <atltime.h>
 #include <vector>
 #include <fstream>
 #include <iostream>// for cout
@@ -21,7 +22,7 @@ static int _COL		= 15;
 static int _TIME	= 132;
 
 void PrintTable(string outputFileName,vector<VertexSet>* table);
-vector<VertexSet>* PrepareTable(float** pVox,float TH,int Size,int Time);
+vector<VertexSet>* PrepareTable(float** pVox,float TH,int Size,int Time,int jump);
 float** readVoxels(string inputFileName,int Size,int Time); 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -38,15 +39,44 @@ int _tmain(int argc, _TCHAR* argv[])
 	if(argc>6)
 		_TH		= atof(argv[8]);
 
-	int size = _COL*_ROW;
+	// Calculate the difference between two times
+	CFileTime myFT1, myFT2;
+	CFileTimeSpan myFTS;
+
+	int size = 6400;//_COL*_ROW;
+	int cacheJump = 640;
 	float** pVox;
-	vector<VertexSet>* Table = new vector<VertexSet>();
-	size=1000;
+	ULONGLONG min,sec,msec;
+	
 	pVox = readVoxels(IN_FILE,size,_TIME);//pVox is matrix of size [Raw*Col][Length]
 	if(pVox!=NULL)
 	{
-		Table = PrepareTable(pVox,(float)_TH,size,_TIME);
-		PrintTable(OUT_FILE,Table);
+		cout <<"Time check by ronen.....\n"<<"VECTOR SIZE: "<< size <<", TH: "<< _TH << endl<< endl;
+		for(int i=1;i<128;i++)
+		{
+			cacheJump = size/i;
+			if((float)(size)/i == cacheJump)
+			{
+				vector<VertexSet>* Table = new vector<VertexSet>();
+				cout <<"Start calculation with cacheJump "<<cacheJump<<" (132 * 4(float) * "<<cacheJump<<" = "<< 132*4*cacheJump/1000 <<"KB)"<<endl;
+				/** Get the first time **************/
+				myFT1 = CFileTime::GetCurrentTime();
+				/************************************/
+				Table = PrepareTable(pVox,(float)_TH,size,_TIME,cacheJump);
+				PrintTable(OUT_FILE,Table);
+				/** Get the second time *************/
+				myFT2 = CFileTime::GetCurrentTime();
+				/************************************/
+				// Calculate the time difference
+				myFTS = myFT2 - myFT1;
+				min = myFTS.GetTimeSpan()/CFileTime::Minute;
+				sec = (myFTS.GetTimeSpan()-(min*CFileTime::Minute))/CFileTime::Second;
+				msec = (myFTS.GetTimeSpan()-(min*CFileTime::Minute)-(sec*CFileTime::Second))/CFileTime::Millisecond;
+				cout <<"time: "<< min << " : "<< sec << " : "<< msec << endl << endl;
+				/************************************/
+				delete Table;
+			}
+		}
 	}
 	else
 		cout<<"something is wrong"<<endl;
@@ -79,35 +109,36 @@ float** readVoxels(string inputFileName,int Size,int Time)
 		return NULL;	
 }
 /***************************************************/
-vector<VertexSet>* PrepareTable(float** pVox,float TH,int Size,int Time)
+vector<VertexSet>* PrepareTable(float** pVox,float TH,int Size,int Time,int jump)
 {
-    vector<VertexSet>* ans = new vector<VertexSet>();
-	int i,j;
+	vector<VertexSet>* ans = new vector<VertexSet>();
+	int x = 0;
+	int y = 0;
+	int i = 0;
+	int j = 0;
+	float* pStatistics = new float[2*Size];
 	for (i=0;i<Size;i++)
 	{
 		VertexSet* vs = new VertexSet();
 		ans->push_back(vs);
+		CorrcoefPrepare (pVox[i] , Time, &pStatistics[2*i]);
 	}
-	for(i=0;i<Size;i++)
-	{
-		for(j=i;j<Size;j++)
-		{
-			if(Corrcoef(&pVox[i][0],&pVox[j][0],Time)>TH)
-			{
-				if (i!=j)
-				{
-					ans->at(j).add(i);
-					ans->at(i).add(j);
-				} 
-				else
-				{
-					ans->at(j).add(i);				
+	for(x = 0;x < Size;x = x+jump){
+		for(y = x;y < Size;y = y+jump){
+			for(i=0;i<jump;i++){
+				for(j=0;j<jump;j++){
+					if(Corrcoef(&pVox[x+i][0],&pStatistics[2*(x+i)],&pVox[y+j][0],&pStatistics[2*(y+j)],Time)>TH){
+						if (x!=y){
+						ans->at(x+i).add(y+j);
+						ans->at(y+j).add(x+i);
+						} 
+						else{
+						ans->at(x+i).add(y+j);				
+						}
+					}
 				}
-				
-				//vs->add(j);				
 			}
 		}
-		//ans->push_back(vs);
 	}
 	return ans;
 }
@@ -115,7 +146,7 @@ vector<VertexSet>* PrepareTable(float** pVox,float TH,int Size,int Time)
 void PrintTable(string outputFileName,vector<VertexSet>* table)
 {
 	int i,j;
-	ofstream outputFile(outputFileName.c_str());
+	ofstream outputFile(outputFileName.c_str(),ios_base::out | ios_base::trunc);
 	for(i=0;i<table->size();i++)
 	{
 		outputFile << i << ": ";
@@ -125,62 +156,3 @@ void PrintTable(string outputFileName,vector<VertexSet>* table)
 	}
 	outputFile.close();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//void write2file(Vector<VertexSet>* c) 
-//{
-//	FileWriter fw=null; 
-//	try {fw = new FileWriter("ALL_Cliques_"+in_file+"_"+TH+"_"+Q_size+".txt");}  
-//	catch (IOException e) {e.printStackTrace();} 
-//	PrintWriter os = new PrintWriter(fw); 
-//	os.println("ALL_Cliques: of file: "+in_file+",  TH:"+TH+" Max Q:"+Q_size); 
-//	for(int i=0;i<c.size();i++) 
-//	{ 
-//		os.println(i+") "+c.elementAt(i)); 
-//	} 
-//	os.close(); 
-//	try {fw.close();}
-//	catch (IOException e) {e.printStackTrace();}
-//} 
-
-//void Graph::print() 
-//{
-//	cout << "Graph: |V| = " << this->_V->size()<<endl;
-//	/*System.out.println("Graph: |V| = "+this._V.size()); */
-//	for(int i=0;(i<this->_V->size());i++) { 
-//		cout<<endl;/*System.out.println(); */
-//		cout<<"V["<<i<<"] = "<<endl;/* System.out.print("V["+i+"] = "); */
-//		VertexSet curr = this->_V->at(i); 
-//		for(int a=0;a<curr.VertexSetSize();a++)  
-//			cout<<curr.VertexSetAt(a)<<", "<<endl; /*System.out.print(curr.at(a)+", ");*/ 
-//	} 
-//}
-//VertexSet Graph::Ni(int i) 
-//{ 
-//	VertexSet ans = _V->at(i); 
-//	return ans; 
-//}

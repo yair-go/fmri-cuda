@@ -1,9 +1,19 @@
-function C=Brain_TO_1D_Array(SM) 
+load brain.mat
+[dim_t,dim_x,dim_y,dim_z]=size(SM);
 
-B=SM(1:132,41:50,41:56,41:80);
-C=reshape(B,1,132*6400);
+start_X=1;
+end_X=dim_x;
+start_Y=1;
+end_Y=dim_y;
+start_Z=1;
+end_Z=dim_z;
+
+B=SM(1:dim_t,start_X:end_X,start_Y:end_Y,start_Z:end_Z);
+dim_mat=length(start_X:end_X)*length(start_Y:end_Y)*length(start_Z:end_Z);
+
+C=reshape(B,1,dim_t*dim_mat);
 %C=reshape(BN',1,1000*132);
 fid=fopen('c:\Vis\FMRI.bin','w');
 fwrite(fid,C,'int');
-fclose(fid)
+fclose(fid);
 end

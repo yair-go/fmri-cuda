@@ -46,14 +46,15 @@ int _tmain(int argc, _TCHAR* argv[])
 	int size = 6400;//_COL*_ROW;
 	int cacheJump = 640;
 	float** pVox;
+
 	ULONGLONG min,sec,msec;
 	
+
 	pVox = readVoxels(IN_FILE,size,_TIME);//pVox is matrix of size [Raw*Col][Length]
 	if(pVox!=NULL)
 	{
 		cout <<"Time check by ronen.....\n"<<"VECTOR SIZE: "<< size <<", TH: "<< _TH << endl<< endl;
-		for(int i=1;i<128;i++)
-		{
+		int i=10; // iri comment - change loop to one iteration
 			cacheJump = size/i;
 			if((float)(size)/i == cacheJump)
 			{
@@ -76,11 +77,12 @@ int _tmain(int argc, _TCHAR* argv[])
 				/************************************/
 				delete Table;
 			}
-		}
+		
 	}
 	else
 		cout<<"something is wrong"<<endl;
-
+	getchar();
+	
 	return 0;
 }
 

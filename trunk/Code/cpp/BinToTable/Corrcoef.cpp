@@ -1,34 +1,35 @@
 #include "Corrcoef.h"
 
 //*****************************************************************/
+//function name:	CorrcoefPrepare
+//arguments:		A (in) - rendom vector
+//					Pstatistics (out) - Pstatistics[0]-avarage,Pstatistics[1]-covariance
+//					ArrayLentgh (in) - length of the vectors
+//return value :	vector statistics
+//*****************************************************************/
+void CorrcoefPrepare (float* A , int ArrayLentgh, float* pStatistics)
+{
+	pStatistics[0] = 0;
+	pStatistics[1] = 0;
+	for (int i = 0 ; i < ArrayLentgh ; i++)
+		pStatistics[0] += A[i];
+	pStatistics[0] /= ArrayLentgh ;
+	for (int i = 0 ; i < ArrayLentgh ; i++)
+		pStatistics[1] += ( A[i] - pStatistics[0] ) * ( A[i] - pStatistics[0] );
+}
+//*****************************************************************/
 //function name:	Corrcoef
 //arguments:		A (in) - rendom vector
 //					B (in) - rendom vector, same length as A
 //					ArrayLentgh (in) - length of the vectors
 //return value :	result of Corrcoef
 //*****************************************************************/
-float Corrcoef ( float * A , float * B , int ArrayLentgh ){
-
-float AvgA = 0 , AvgB = 0;
-float CovAB = 0 , CovAA = 0 , CovBB = 0 ; 
-
-/**first loop to find the mean of A and B ***************************/
-for (int i = 0 ; i < ArrayLentgh ; i++)
+float Corrcoef ( float * A , float* PstatisticsA,float * B ,float* PstatisticsB, int ArrayLentgh )
 {
-	AvgA += *(A+i);
-	AvgB += *(B+i);
+	float CovAB = 0; 
+	/**loop for standard deviation ******************************/
+	for (int i = 0 ; i < ArrayLentgh ; i++){
+		CovAB += ( A[i] - PstatisticsA[0] ) * ( B[i] - PstatisticsB[0] );
+	}
+	return CovAB / ( sqrt (PstatisticsA[1] * PstatisticsB[1]) + E );
 }
-AvgA /= ArrayLentgh ;
-AvgB /= ArrayLentgh ;
- 
-/**secound loop for standard deviation ******************************/
-for (int i = 0 ; i < ArrayLentgh ; i++){
-CovAB += ( *(A+i) - AvgA ) * ( *(B+i) - AvgB );
-CovAA += ( *(A+i) - AvgA ) * ( *(A+i) - AvgA );
-CovBB += ( *(B+i) - AvgB ) * ( *(B+i) - AvgB );
-
-}// <p> End of for loop. </p>
-
-return CovAB / ( sqrt (CovAA *CovBB ) + E );
-
-} // <p> End of function Corrcoef(). </p>

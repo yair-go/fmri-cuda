@@ -13,7 +13,9 @@ dim_mat=length(start_X:end_X)*length(start_Y:end_Y)*length(start_Z:end_Z);
 
 C=reshape(B,1,dim_t*dim_mat);
 %C=reshape(BN',1,1000*132);
-fid=fopen('c:\Vis\FMRI.bin','w');
+[file,path] = uiputfile('FMRI.bin.','Save file name');
+full_path=[path file];
+fid=fopen(full_path,'w');
 fwrite(fid,C,'int');
 fclose(fid);
 end

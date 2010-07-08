@@ -16,7 +16,7 @@ using namespace std;
 
 static string IN_FILE = "FMRI.bin";
 static string OUT_FILE = "FMRI.txt";
-static double _TH	= 0.75;
+static double _TH	= 0.8;
 static int _ROW		= 15;
 static int _COL		= 15;
 static int _TIME	= 132;
@@ -43,7 +43,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	CFileTime myFT1, myFT2;
 	CFileTimeSpan myFTS;
 
-	int size = 6400;//_COL*_ROW;
+	int size = 445440;//_COL*_ROW;
 	int cacheJump = 640;
 	float** pVox;
 
@@ -54,7 +54,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	if(pVox!=NULL)
 	{
 		cout <<"Time check by ronen.....\n"<<"VECTOR SIZE: "<< size <<", TH: "<< _TH << endl<< endl;
-		int i=10; // iri comment - change loop to one iteration
+		int i=696; // iri comment - change loop to one iteration
 			cacheJump = size/i;
 			if((float)(size)/i == cacheJump)
 			{

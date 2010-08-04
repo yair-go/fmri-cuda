@@ -1,0 +1,29 @@
+C:\Users\Dima\Documents\Visual Studio 2008\Projects\CamTest\CamTest\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Dima\Documents\Visual Studio 2008\Projects\CamTest\CamTest\obj\Debug\CamTest.Form1.resources
+C:\Users\Dima\Documents\Visual Studio 2008\Projects\CamTest\CamTest\obj\Debug\CamTest.Properties.Resources.resources
+C:\Users\Dima\Documents\Visual Studio 2008\Projects\CamTest\CamTest\obj\Debug\CamTest.csproj.GenerateResource.Cache
+C:\Users\Dima\Documents\Visual Studio 2008\Projects\CamTest\CamTest\bin\Debug\CamTest.exe
+C:\Users\Dima\Documents\Visual Studio 2008\Projects\CamTest\CamTest\bin\Debug\CamTest.pdb
+C:\Users\Dima\Documents\Visual Studio 2008\Projects\CamTest\CamTest\obj\Debug\CamTest.exe
+C:\Users\Dima\Documents\Visual Studio 2008\Projects\CamTest\CamTest\obj\Debug\CamTest.pdb
+C:\Users\Dima\Documents\Visual Studio 2008\Projects\CamTest\CamTest\bin\Debug\dshow.dll
+C:\Users\Dima\Documents\Visual Studio 2008\Projects\CamTest\CamTest\bin\Debug\dshow.pdb
+D:\Work\CamTest\CamTest\obj\Debug\CamTest.exe
+D:\Work\CamTest\CamTest\obj\Debug\CamTest.pdb
+D:\Work\CamTest\CamTest\bin\Debug\CamTest.exe
+D:\Work\CamTest\CamTest\bin\Debug\CamTest.pdb
+D:\Work\CamTest\CamTest\bin\Debug\dshow.dll
+D:\Work\CamTest\CamTest\bin\Debug\dshow.pdb
+D:\Work\CamTest\CamTest\obj\Debug\ResolveAssemblyReference.cache
+D:\Work\CamTest\CamTest\obj\Debug\CamTest.Form1.resources
+D:\Work\CamTest\CamTest\obj\Debug\CamTest.Properties.Resources.resources
+D:\Work\CamTest\CamTest\obj\Debug\CamTest.csproj.GenerateResource.Cache
+C:\Users\Moti\Documents\CamTest\CamTest\CamTest\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Moti\Documents\CamTest\CamTest\CamTest\obj\Debug\CamTest.Form1.resources
+C:\Users\Moti\Documents\CamTest\CamTest\CamTest\obj\Debug\CamTest.Properties.Resources.resources
+C:\Users\Moti\Documents\CamTest\CamTest\CamTest\obj\Debug\CamTest.csproj.GenerateResource.Cache
+C:\Users\Moti\Documents\CamTest\CamTest\CamTest\bin\Debug\CamTest.exe
+C:\Users\Moti\Documents\CamTest\CamTest\CamTest\bin\Debug\CamTest.pdb
+C:\Users\Moti\Documents\CamTest\CamTest\CamTest\bin\Debug\dshow.dll
+C:\Users\Moti\Documents\CamTest\CamTest\CamTest\obj\Debug\CamTest.exe
+C:\Users\Moti\Documents\CamTest\CamTest\CamTest\obj\Debug\CamTest.pdb

@@ -1,0 +1,1 @@
+fMRI cuda serevr is research of Ariel University in parallel processing class.
